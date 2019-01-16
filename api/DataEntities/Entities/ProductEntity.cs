@@ -1,10 +1,11 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using DataEntities.Base;
 
 namespace DataEntities.Entities
 {
-    public class ProductEntity
+    public class ProductEntity : IEntity
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
