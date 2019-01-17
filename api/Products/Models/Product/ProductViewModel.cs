@@ -1,6 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
-using Services.Models.Product;
+using ServiceContracts.Models.Product;
 
 namespace Api.Models.Product
 {

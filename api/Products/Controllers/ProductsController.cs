@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Api.Models.Product;
 using Microsoft.AspNetCore.Mvc;
-using Services;
+using ServiceContracts;
 
 namespace Api.Controllers
 {
