@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using DataAccess;
 using DataContracts.Base;
 using DataEntities.Base;
@@ -35,6 +37,11 @@ namespace Repositories.Base
         public virtual void Edit(TEntity entity)
         {
             DbContext.Entry(entity).State = EntityState.Modified;
+        }
+
+        public virtual IList<TEntity> GetAll()
+        {
+            return Dbset.ToList();
         }
     }
 }
