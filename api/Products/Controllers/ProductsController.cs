@@ -1,19 +1,24 @@
 ﻿using System.Collections.Generic;
-using DataAccess;
-using DataEntities.Entities;
+using Api.Models.Product;
 using Microsoft.AspNetCore.Mvc;
+using Services;
 
-namespace Products.Controllers
+namespace Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class ProductsController : ControllerBase
     {
-        // GET api/values
-        [HttpGet]
-        public ActionResult<IEnumerable<string>> Get()
+        private readonly IProductService _productService;
+        public ProductsController(IProductService _productService)
         {
-            return new string[] { "value1", "value2" };
+            this._productService = _productService;
+        }
+        
+        [HttpGet]
+        public ActionResult<IEnumerable<ProductViewModel>> Get()
+        {
+            return Ok(_productService.GetAll<ProductViewModel>());
         }
 
         // GET api/values/5
@@ -23,19 +28,23 @@ namespace Products.Controllers
             return "value";
         }
 
-        // POST api/values
         [HttpPost]
-        public void Post([FromBody] string value)
+        public IActionResult Post([FromBody] ProductViewModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Invalid model format");
+            }
+
+            _productService.Create(model);
+            return Ok(model);
         }
 
-        // PUT api/values/5
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] string value)
         {
         }
 
-        // DELETE api/values/5
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
