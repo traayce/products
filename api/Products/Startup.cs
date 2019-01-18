@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Api.Mappings;
+using Api.Services;
+using AutoMapper;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -23,11 +26,12 @@ namespace Api
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             Registry.AddServices(services);
             services.AddTransient<IProductService, ProductService>();
+            services.AddTransient<IProductApplicationService, ProductApplicationService>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info { Title = "API", Version = "v1" });
             });
-            
+            services.AddAutoMapper(x => x.AddProfile(new MappingConfig()));
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
