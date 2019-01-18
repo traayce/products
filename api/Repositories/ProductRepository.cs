@@ -2,7 +2,6 @@ using System;
 using DataAccess;
 using DataContracts;
 using DataEntities.Entities;
-using Microsoft.EntityFrameworkCore;
 using Repositories.Base;
 
 namespace Repositories

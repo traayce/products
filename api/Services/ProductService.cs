@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using AutoMapper;
 using DataContracts;
 using DataContracts.Base;
 using DataEntities.Entities;
@@ -13,18 +13,22 @@ namespace Services
     {
         private readonly IProductRepository productRepository;
         private readonly IUnitOfWork unitOfWork;
+        private readonly IMapper _mapper;  
 
         public ProductService(
             IProductRepository productRepository,
-            IUnitOfWork unitOfWork)
+            IUnitOfWork unitOfWork,
+            IMapper _mapper)
         {
             this.productRepository = productRepository;
             this.unitOfWork = unitOfWork;
+            this._mapper = _mapper;
         }
 
-        public IList<T> GetAll<T>() where T : IProductDomainModel, new()
+        public IEnumerable<T> GetAll<T>() where T : class, IProductDomainModel, new()
         {
-            var list = productRepository.GetAll().Select(x => new T
+            var list = productRepository.GetAll().Select(x => 
+                new T
             {
                 Id = x.Id,
                 Price = x.Price,
@@ -32,37 +36,48 @@ namespace Services
                 Name = x.Name,
                 LastUpdated = x.LastUpdated,
                 Photo = x.Photo
-            }).ToList();
+            });
 
             return list;
         }
 
-        public T Create<T>(T model) where T : IProductDomainModel
+        public ProductDomainModel Create(ProductDomainModel model)
         {
-            var entity = productRepository.Add(new ProductEntity()
-            {
-                Code = model.Code,
-                Price = model.Price,
-                Name = model.Name,
-                Photo = model.Photo
-            });
+            var entity = _mapper.Map<ProductEntity>(model);
+            entity = productRepository.Add(entity);
             unitOfWork.CommitChanges();
-            model.Id = entity.Id;
-            return model;
+
+            return _mapper.Map(entity, model);
         }
         
-        public T Update<T>(T model) where T : IProductDomainModel, new()
+
+        public ProductDomainModel GetById(int id)
         {
-            var entity = productRepository.Add(new ProductEntity()
-            {
-                Code = model.Code,
-                Price = model.Price,
-                Name = model.Name,
-                Photo = model.Photo
-            });
+            var entity = productRepository.GetById(id);
+            if (entity == null) return null;
+
+            return _mapper.Map<ProductDomainModel>(entity);
+        }
+        
+        public ProductDomainModel Delete(int id)
+        {
+            var entity = productRepository.GetById(id);
+            if (entity == null) return null;
+            
+            productRepository.Delete(entity);
             unitOfWork.CommitChanges();
-            model.Id = entity.Id;
-            return model;
+            return _mapper.Map<ProductDomainModel>(entity);
+        }
+        
+        public ProductDomainModel Edit(int id, ProductDomainModel model)
+        {
+            var entity = productRepository.GetById(id);
+            if (entity == null) return null;
+            
+            _mapper.Map(model, entity);
+            productRepository.Edit(entity);
+            unitOfWork.CommitChanges();
+            return _mapper.Map(entity, model);
         }
     }
 }

@@ -1,7 +1,7 @@
 using System;
 using ServiceContracts.Models.Product;
 
-namespace Services.Models.Product
+namespace ServiceContracts.Models.Product
 {   
     public class ProductDomainModel : IProductDomainModel
     {
