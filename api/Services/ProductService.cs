@@ -79,5 +79,11 @@ namespace Services
             unitOfWork.CommitChanges();
             return _mapper.Map(entity, model);
         }
+
+        public bool IsCodeValid(string code, int id = 0)
+        {
+            var entity = productRepository.GetAll().FirstOrDefault(x => x.Code == code);
+            return !(entity != null && entity.Id != id);
+        }
     }
 }

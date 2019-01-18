@@ -11,5 +11,6 @@ namespace ServiceContracts
         
         ProductDomainModel Delete(int id);
         ProductDomainModel Edit(int id, ProductDomainModel model);
+        bool IsCodeValid(string code, int id = 0);
     }
 }

@@ -13,5 +13,12 @@ namespace DataAccess
         {
             optionsBuilder.UseSqlServer(connectionString);
         }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder.Entity<ProductEntity>()
+                .HasIndex(u => u.Code)
+                .IsUnique();
+        }
     }
 }

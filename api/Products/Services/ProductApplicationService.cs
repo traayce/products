@@ -13,6 +13,7 @@ namespace Api.Services
         IEnumerable<ProductViewModel> GetAll();
         ProductViewModel Delete(int id);
         ProductViewModel GetById(int id);
+        bool IsCodeValid(string code, int id = 0);
     }
     
     public class ProductApplicationService : IProductApplicationService
@@ -39,7 +40,11 @@ namespace Api.Services
             var result = _productService.Create(_mapper.Map<ProductDomainModel>(model));
             return _mapper.Map(result, model);
         }
-        
+
+        public bool IsCodeValid(string code, int id = 0)
+        {
+            return _productService.IsCodeValid(code, id);
+        }
         
         public ProductViewModel GetById(int id)
         {
