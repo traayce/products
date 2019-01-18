@@ -13,12 +13,14 @@ namespace Services
 {
     public static class Registry
     {
+        private const string connectionString =
+            "Data Source=localhost\\MSSQLSERVER01;Initial Catalog=TaskDatabase;Integrated Security=True";
         public static IServiceCollection AddServices(IServiceCollection services)
         {
             services.AddTransient<IProductRepository, ProductRepository>();
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddDbContext<DatabaseContext>(options =>
-                options.UseSqlServer("Data Source=localhost\\MSSQLSERVER01;Initial Catalog=TaskDatabase;Integrated Security=True"));
+                options.UseSqlServer(connectionString));
 
             services.AddAutoMapper(x => x.AddProfile(new MappingConfig()));
             return services;

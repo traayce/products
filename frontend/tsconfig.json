@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "module": "esnext",
+    "target": "es5",
+    "lib": [
+      "dom",
+      "es2015"
+    ],
+    "moduleResolution": "node",
+    "experimentalDecorators": true,
+    "noImplicitAny": false,
+    "strictNullChecks": true,
+    "sourceMap": true,
+    "jsx": "react",
+    "allowJs": false,
+    "typeRoots": ["node_modules/@types"],
+    "baseUrl": "./src",
+    "paths": {
+      "client": ["client/*"],
+      "server": ["server/*"]
+    }
+  },
+  "exclude": [
+    "node_modules",
+    "dist",
+    "src/**/__tests__/*"
+  ]
+}
