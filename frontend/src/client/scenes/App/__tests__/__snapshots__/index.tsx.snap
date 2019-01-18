@@ -1,0 +1,70 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`App scene should render correctly 1`] = `
+<div
+  className="appShell"
+>
+  <div
+    className="navbarContainer"
+  >
+    <ul
+      className="navbar"
+    >
+      <li
+        className="item"
+      >
+        <a
+          className="link"
+          href="/"
+          onClick={[Function]}
+        >
+          Home
+        </a>
+      </li>
+      <li
+        className="item"
+      >
+        <a
+          className="link"
+          href="/about"
+          onClick={[Function]}
+        >
+          About
+        </a>
+      </li>
+      <li
+        className="item"
+      >
+        <a
+          className="link"
+          href="/protected"
+          onClick={[Function]}
+        >
+          Protected
+        </a>
+      </li>
+      <li
+        className="item"
+      >
+        <a
+          className="link"
+          href="/login"
+          onClick={[Function]}
+        >
+          Login
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div>
+    loading
+  </div>
+  <footer
+    className="footer"
+  >
+    <p>
+      🎉  Presentational App
+    </p>
+  </footer>
+</div>
+`;
