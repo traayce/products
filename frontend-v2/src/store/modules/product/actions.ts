@@ -1,23 +1,23 @@
 import { GET_PRODUCTS_SUCCESS, GET_PRODUCTS_FAILURE, GET_PRODUCTS_START } from "./constants";
 import { productCommands } from "./api";
-import { ThunkAction } from "../../action";
+import { Action } from "redux";
+import { ThunkDispatch } from "redux-thunk";
+import { IState } from "./state";
 
-export const getProducts = (): ThunkAction => (
-  dispatch,
-  getState,
-  request
-) => {
-  dispatch(getProductsStart());
-  setTimeout(() =>
-    productCommands
-      .productsApiGet()
-      .then(res => {
-        if (res.message !== undefined) {
-          return dispatch(getProductsFail("error occured while getting players list"));
-        }
-        return dispatch(getProductsSuccess(res));
-      })
-      .catch(err => dispatch(getProductsFail("error occured while gettind players list"))), 400);
+export const getProducts = () => {
+  return async (dispatch: ThunkDispatch<IState, void, Action>) => {
+    dispatch(getProductsStart());
+    setTimeout(() =>
+      productCommands
+        .productsApiGet()
+        .then(res => {
+          if (res.message !== undefined) {
+            return dispatch(getProductsFail("error occured while getting products list"));
+          }
+          return dispatch(getProductsSuccess(res));
+        })
+        .catch(err => dispatch(getProductsFail("error occured while gettind products list"))), 1000);
+  };
 };
 
 const getProductsSuccess = (res: Array<object>) => {

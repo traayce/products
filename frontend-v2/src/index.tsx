@@ -1,16 +1,16 @@
 import * as React from "react";
 import { render } from "react-dom";
 import { AppContainer } from "react-hot-loader";
-// import { Products } from "./components/App";
 import { Provider } from "react-redux";
 import { storeCreator } from "./store/createStore";
+import { ProductsComponent } from "./components/products/components-products-component";
 const rootEl = document.getElementById("root");
 
 const store = storeCreator();
 render(
     <Provider store={store}>
         <AppContainer>
-            <div>test</div>
+            <ProductsComponent />
         </AppContainer>
     </Provider>,
     rootEl

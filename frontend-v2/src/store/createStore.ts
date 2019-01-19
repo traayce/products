@@ -7,7 +7,6 @@ declare global {
     __REDUX_DEVTOOLS_EXTENSION__: any;
   }
 }
-// type StoreCreator = (reducer: Reducer<IStore>, preloadedState: IStore | undefined) => Store<IStore | {}>;
 
 export const storeCreator = (initialState?: IStore): Store<IStore | {}> => {
   let storeMiddleware = applyMiddleware(...middleware);
