@@ -1,4 +1,5 @@
-﻿using Api.Mappings;
+﻿using Api.Configurations.Swagger;
+using Api.Mappings;
 using Api.Services;
 using AutoMapper;
 using Microsoft.AspNetCore.Builder;
@@ -8,7 +9,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ServiceContracts;
 using Services;
-using Swashbuckle.AspNetCore.Swagger;
 
 namespace Api
 {
@@ -27,11 +27,15 @@ namespace Api
             Registry.AddServices(services);
             services.AddTransient<IProductService, ProductService>();
             services.AddTransient<IProductApplicationService, ProductApplicationService>();
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new Info { Title = "API", Version = "v1" });
-            });
+            services.AddSwaggerGen(c => c.Configure());
+            
             services.AddAutoMapper(x => x.AddProfile(new MappingConfig()));
+            services.AddApiVersioning(option =>
+            {
+                option.ReportApiVersions = true;
+                option.AssumeDefaultVersionWhenUnspecified = true;
+                option.DefaultApiVersion = new ApiVersion(1, 0);
+            });
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -43,11 +47,7 @@ namespace Api
             
             app.UseSwagger();
 
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "API V1");
-                c.RoutePrefix = string.Empty;
-            });
+            app.UseSwaggerUI(c => c.ConfigureSwaggerUi());
 
             app.UseMvc();
         }
