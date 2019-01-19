@@ -1,14 +1,18 @@
 import * as React from "react";
 import { render } from "react-dom";
 import { AppContainer } from "react-hot-loader";
-import App from "./components/App";
-
+// import { Products } from "./components/App";
+import { Provider } from "react-redux";
+import { storeCreator } from "./store/createStore";
 const rootEl = document.getElementById("root");
 
+const store = storeCreator();
 render(
-    <AppContainer>
-        <App />
-    </AppContainer>,
+    <Provider store={store}>
+        <AppContainer>
+            <div>test</div>
+        </AppContainer>
+    </Provider>,
     rootEl
 );
 
