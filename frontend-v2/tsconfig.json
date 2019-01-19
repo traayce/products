@@ -14,6 +14,14 @@
         "declaration": false,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
+        "plugins": [{
+            "name": "typescript-tslint-plugin",
+            "alwaysShowRuleFailuresAsWarnings": true,
+            "ignoreDefinitionFiles": true,
+            "configFile": "./tslint.json",
+            "suppressWhileTypeErrorsPresent": false,
+            "mockTypeScriptVersion": false
+          }],
         "lib": [
             "dom",
             "dom.iterable",
