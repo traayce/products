@@ -1,11 +1,13 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Api.Models.Product;
 using Api.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers
 {
-    [Route("api/[controller]")]
+    [ApiVersion("1.0", Deprecated = true)]
+    [ApiVersion("1.1")]
+    [Route("api/[controller]/v{version:apiVersion}")]
     [ApiController]
     public class ProductController : ControllerBase
     {
@@ -31,7 +33,7 @@ namespace Api.Controllers
             return Ok(model);
         }
 
-        [HttpPost]
+        [HttpPost, MapToApiVersion("1.0")]
         public IActionResult Post([FromBody] ProductViewModel model)
         {
             //TODO: move validations to commands
@@ -45,6 +47,12 @@ namespace Api.Controllers
 
             _productApplicationService.Create(model);
             return Ok(model);
+        }
+
+        [HttpPost, MapToApiVersion("1.1")]
+        public IActionResult PostV1([FromForm]ProductViewModel2 model)
+        {
+            return Ok();
         }
 
         [HttpPut("{id}")]
