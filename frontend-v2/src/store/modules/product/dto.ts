@@ -3,6 +3,6 @@ export interface ProductDTO {
     price: number;
     name: string;
     code: string;
-    LastUpdated: Date;
+    lastUpdated: Date;
     photo: string;
 }

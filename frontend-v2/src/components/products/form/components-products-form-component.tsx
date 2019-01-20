@@ -55,7 +55,7 @@ class ProductFormComponentClass extends React.PureComponent<Props> {
     public state: State = this.initialState;
 
     public render(): JSX.Element {
-        const { classes } = this.props;
+        const { classes, editingObject } = this.props;
         const { name, code, price, photo, isSubmiting, isConfirmationOpen, error, priceError, codeError, nameError } = this.state;
         return <Paper className={classes.Container}>
             <ProductFormModalComponent
@@ -113,6 +113,8 @@ class ProductFormComponentClass extends React.PureComponent<Props> {
                     type="submit"
                     variant="contained"
                     disabled={isSubmiting || (priceError !== "" || nameError !== "" || codeError !== "" || price === 0 || name === "" || code === "")}>Submit</Button>
+                    <br/>
+                    {editingObject !== undefined ? `Last Edited: ${editingObject.lastUpdated}` : null}
             </form>
         </Paper>;
     }

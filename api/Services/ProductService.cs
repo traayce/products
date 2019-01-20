@@ -36,7 +36,7 @@ namespace Services
                 Price = x.Price,
                 Code = x.Code,
                 Name = x.Name,
-                LastUpdated = x.LastUpdated,
+                LastUpdated = x.LastUpdated.ToLocalTime(),
                 Photo = x.Photo
             });
 
