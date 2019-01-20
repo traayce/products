@@ -22,8 +22,16 @@ export const ProductsContainerStyles = (theme: Theme) => createStyles({
           textAlign: "center"
       },
       Alert: {
+        display: "inline-flex",
         padding: "20px",
         backgroundColor: "#f44336",
-        color: "white"
-      }
+        color: "white",
+        maxWidth: "50%"
+      },
+      card: {
+        maxWidth: 345,
+      },
+      media: {
+        height: 140,
+      },
 });

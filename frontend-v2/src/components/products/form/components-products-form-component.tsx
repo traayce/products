@@ -3,10 +3,16 @@ import { Paper, WithStyles, withStyles, Button, FormControl, InputLabel, Input, 
 import { ProductsContainerStyles } from "../components-products-styles";
 import { ProductFormModalComponent } from "./components-products-form-modal-component";
 import axios from "axios";
+import { ProductDTO } from "../../../store/modules/product";
 
-type Props = WithStyles<typeof ProductsContainerStyles>;
+interface OuterProps {
+    editingObject?: ProductDTO;
+    onFinished?(): void;
+}
+type Props = WithStyles<typeof ProductsContainerStyles> & OuterProps;
 
 interface State {
+    id: number;
     name: string;
     nameError: string;
     code: string;
@@ -20,7 +26,22 @@ interface State {
 }
 
 class ProductFormComponentClass extends React.PureComponent<Props> {
+    constructor(props: Props) {
+        super(props);
+        console.log(props);
+        if (props.editingObject !== undefined) {
+            const { name, code, price, id } = props.editingObject;
+            this.state = {
+                ...this.state,
+                id: id,
+                name: name,
+                code: code,
+                price: price
+            };
+        }
+    }
     public initialState: State = {
+        id: 0,
         name: "",
         nameError: "",
         code: "",
@@ -32,7 +53,7 @@ class ProductFormComponentClass extends React.PureComponent<Props> {
         isConfirmationOpen: false,
         error: ""
     };
-    public state: State = initialState;
+    public state: State = this.initialState;
 
     public render(): JSX.Element {
         const { classes } = this.props;
@@ -100,9 +121,13 @@ class ProductFormComponentClass extends React.PureComponent<Props> {
         const { classes } = this.props;
         if (error === "")
             return null;
-        return <div className={classes.Alert}>
-            {error}
-        </div>;
+        return <>
+            <br />
+            <div className={classes.Alert}>
+                {error}
+            </div>
+            <br />
+        </ >;
     }
 
     private onModalResponse = (isConfirmed: boolean) => () => {
@@ -123,7 +148,7 @@ class ProductFormComponentClass extends React.PureComponent<Props> {
     }
 
     private submit = () => {
-        const { name, code, price, photo } = this.state;
+        const { name, code, price, photo, id } = this.state;
         const formData = new FormData();
         formData.append("Name", name);
         formData.append("Code", code);
@@ -132,22 +157,45 @@ class ProductFormComponentClass extends React.PureComponent<Props> {
             formData.append("Photo", photo);
         }
         // todo: move API logic into separate file
-        const baseURL: string = "http://localhost:5000/api";
+        const baseURL: string = "http://localhost:3000/api";
+        const endpoint: string = "/product/v1.1";
         const request = axios.create({
             baseURL,
             headers: {
                 Accept: "multipart/form-data"
             }
         });
-        request
-            .post(`/product/v1.1`, formData)
-            .then(res => {
-                this.setState(this.initialState);
-                console.log(res.data);
-            })
-            .catch(err => {
-                console.log(err);
-            });
+        if (id === 0) {
+            request
+                .post(`${endpoint}`, formData)
+                .then(res => {
+                    this.sendOnFinish();
+                })
+                .catch(err => {
+                    const { data } = err.response;
+                    this.setState({ error: data });
+                    console.log(err);
+                });
+        } else {
+            request
+                .put(`${endpoint}/${id}`, formData)
+                .then(res => {
+                    this.sendOnFinish();
+                })
+                .catch(err => {
+                    const { data } = err.response;
+                    this.setState({ error: data });
+                    console.log(err);
+                });
+        }
+    }
+
+    private sendOnFinish = () => {
+        const { onFinished } = this.props;
+        this.setState(this.initialState);
+        if (onFinished !== undefined) {
+            onFinished();
+        }
     }
 
     private handleChange = (name: string, isValid: (val: string) => boolean = (val) => val !== "", error: string = "Field is Required"): React.ChangeEventHandler<HTMLInputElement> =>

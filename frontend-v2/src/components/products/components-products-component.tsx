@@ -1,5 +1,5 @@
 import * as React from "react";
-import { LinearProgress, Paper, GridList, GridListTile, ListSubheader, WithStyles, withStyles, GridListTileBar } from "@material-ui/core";
+import { LinearProgress, Paper, GridList, GridListTile, ListSubheader, WithStyles, withStyles, Button, Card, CardActionArea, CardContent, Typography, CardActions, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from "@material-ui/core";
 import { MapStateToProps, MapDispatchToProps, connect } from "react-redux";
 import { IStore } from "../../store/state";
 import { ProductDTO } from "../../store/modules/product";
@@ -7,6 +7,7 @@ import { ProductsContainerStyles } from "./components-products-styles";
 import { actions } from "../../store/modules/product";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
+import { ProductFormComponent } from "./form/components-products-form-component";
 
 interface StateProps {
   isLoading: boolean;
@@ -15,12 +16,20 @@ interface StateProps {
 }
 
 interface DispatchProps {
-  getProducts?: () => any;
+  dispatch?: ThunkDispatch<object, void, Action<any>>;
 }
 
 type Props = StateProps & DispatchProps & WithStyles<typeof ProductsContainerStyles>;
 
-class ProductsClass extends React.PureComponent<Props> {
+interface State {
+  editingObject: ProductDTO | null;
+}
+
+class ProductsClass extends React.Component<Props, State> {
+  public initialState: State = {
+    editingObject: null,
+  };
+  public state: State = this.initialState;
   public static MapStateToProps: MapStateToProps<StateProps, object, IStore> = storeState => ({
     products: storeState.products.products,
     isLoading: storeState.products.isLoading,
@@ -28,7 +37,7 @@ class ProductsClass extends React.PureComponent<Props> {
   })
 
   public static MapDispatchToProps: MapDispatchToProps<DispatchProps, object> = (dispatch: ThunkDispatch<object, void, Action>, props) => ({
-    getProducts: () => dispatch(actions.getProducts())
+    dispatch: dispatch
   })
 
   public render(): JSX.Element {
@@ -42,9 +51,17 @@ class ProductsClass extends React.PureComponent<Props> {
       </Paper>;
     }
     return <Paper className={classes.Container}>
+      {this.renderEditor()}
       <GridList cellHeight={180} >
         <GridListTile key="Subheader" cols={2} >
-          <ListSubheader component="div">Products ({error})</ListSubheader>
+          <ListSubheader component="div">Products ({error})
+          <Button
+              className={classes.Button}
+              color="primary"
+              type="submit"
+              variant="contained"
+              onClick={this.getProducts}>Fetch Products</Button>
+          </ListSubheader>
         </GridListTile>
         {this.renderProducts(products)}
       </GridList>
@@ -52,20 +69,74 @@ class ProductsClass extends React.PureComponent<Props> {
   }
 
   private renderProducts = (products: ProductDTO[]) => {
+    const { classes } = this.props;
     return products.map((product: ProductDTO) => (
-      <GridListTile key={product.id}>
-        <GridListTileBar
-          title={product.name + " " + product.code}
-          subtitle={<span>Product</span>}
-        />
-      </GridListTile>
+      <Card className={classes.card}>
+        <CardActionArea>
+          <CardContent>
+            <Typography gutterBottom variant="h5" component="h2">
+              Product
+          </Typography>
+            <Typography component="p">
+              {JSON.stringify(product)}
+            </Typography>
+          </CardContent>
+        </CardActionArea>
+        <CardActions>
+          <Button size="small" color="primary" onClick={this.onDelete(product.id)}>
+            Delete
+        </Button>
+          <Button size="small" color="primary" onClick={this.openEditor(product)}>
+            Edit
+        </Button>
+        </CardActions>
+      </Card>
     ));
   }
 
-  private getProducts() {
-    const { getProducts } = this.props;
-    if (getProducts != null) {
-      getProducts();
+  private openEditor = (product: ProductDTO) => (e: React.MouseEvent<HTMLInputElement>) => {
+    this.setState({ editingObject: product });
+  }
+
+  private renderEditor = () => {
+    const { editingObject } = this.state;
+    if (editingObject == null)
+      return null;
+    return <Dialog
+      open={true}
+      onClose={this.onModalClose}
+    >
+      <DialogTitle id="alert-dialog-title">{"Product Edit"}</DialogTitle>
+      <DialogContent>
+        <DialogContentText id="alert-dialog-description">
+          <ProductFormComponent editingObject={editingObject} onFinished={this.onModalClose} />
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={this.onModalClose} color="primary">
+          Close
+      </Button>
+      </DialogActions>
+    </Dialog>;
+  }
+
+  private onModalClose = () => {
+    this.setState({ editingObject: null });
+    this.getProducts();
+  }
+
+  private onDelete = (id: number) => (e: React.MouseEvent<HTMLInputElement>) => {
+    const { dispatch } = this.props;
+    if (dispatch != null) {
+      dispatch(actions.deleteProduct(id));
+    }
+    this.getProducts();
+  }
+
+  private getProducts = () => {
+    const { dispatch } = this.props;
+    if (dispatch != null) {
+      dispatch(actions.getProducts());
     }
   }
 }

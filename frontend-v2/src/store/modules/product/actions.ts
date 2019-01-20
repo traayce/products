@@ -37,3 +37,9 @@ const getProductsFail = (error: string) => {
 const getProductsStart = () => ({
   type: GET_PRODUCTS_START
 });
+
+export const deleteProduct = (id: number) => {
+  return async (dispatch: ThunkDispatch<IState, void, Action>) => {
+      productCommands.deleteProduct(id);
+  };
+};
