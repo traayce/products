@@ -21,9 +21,9 @@ namespace Api.Controllers
         
         
         [HttpGet]
-        public ActionResult<IEnumerable<ProductViewModel>> Get()
+        public ActionResult<IEnumerable<ProductViewModel>> Get(string name = null)
         {
-            return Ok(_productApplicationService.GetAll());
+            return Ok(_productApplicationService.GetAll(name));
         }
 
         [HttpGet("{id}")]

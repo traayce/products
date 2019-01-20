@@ -8,9 +8,9 @@ const request = axios.create({
   }
 });
 export namespace productCommands {
-  export const productsApiGet = () => {
+  export const productsApiGet = (searchText: string) => {
     return request
-      .get(`/product/${version}`)
+      .get(`/product/${version}`, { params: { name: searchText } })
       .then(res => res.data)
       .catch(err => err);
   };

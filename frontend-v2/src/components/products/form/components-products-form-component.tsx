@@ -28,7 +28,6 @@ interface State {
 class ProductFormComponentClass extends React.PureComponent<Props> {
     constructor(props: Props) {
         super(props);
-        console.log(props);
         if (props.editingObject !== undefined) {
             const { name, code, price, id } = props.editingObject;
             this.state = {
@@ -99,6 +98,7 @@ class ProductFormComponentClass extends React.PureComponent<Props> {
                 <Button
                     className={classes.Button}
                     variant="contained"
+                    color="primary"
                     component="label"
                 >Upload File
                         <input

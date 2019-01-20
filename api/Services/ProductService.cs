@@ -26,9 +26,10 @@ namespace Services
             this._mapper = _mapper;
         }
 
-        public IEnumerable<T> GetAll<T>() where T : class, IProductDomainModel, new()
+        public IEnumerable<T> GetAll<T>(string name) where T : class, IProductDomainModel, new()
         {
-            var list = productRepository.GetAll().Select(x => 
+            bool query = string.IsNullOrEmpty(name);
+            var list = productRepository.GetAll().Where(x => query || x.Name.StartsWith(name)).Select(x => 
                 new T
             {
                 Id = x.Id,

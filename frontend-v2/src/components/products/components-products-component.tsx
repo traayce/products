@@ -1,5 +1,5 @@
 import * as React from "react";
-import { LinearProgress, Paper, WithStyles, withStyles, Button, Card, CardActionArea, CardContent, Typography, CardActions, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from "@material-ui/core";
+import { LinearProgress, Paper, WithStyles, withStyles, Button, Card, CardActionArea, CardContent, Typography, CardActions, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, TextField } from "@material-ui/core";
 import { MapStateToProps, MapDispatchToProps, connect } from "react-redux";
 import { IStore } from "../../store/state";
 import { ProductDTO } from "../../store/modules/product";
@@ -25,12 +25,14 @@ type Props = StateProps & DispatchProps & WithStyles<typeof ProductsContainerSty
 interface State {
   editingObject: ProductDTO | undefined;
   isEditorOpen: boolean;
+  searchText: string;
 }
 
 class ProductsClass extends React.Component<Props, State> {
   public initialState: State = {
     editingObject: undefined,
-    isEditorOpen: false
+    isEditorOpen: false,
+    searchText: ""
   };
   public state: State = this.initialState;
   public static MapStateToProps: MapStateToProps<StateProps, object, IStore> = storeState => ({
@@ -56,8 +58,16 @@ class ProductsClass extends React.Component<Props, State> {
     }
     return <Paper className={classes.Container}>
       {this.renderEditor()}
-      <div >Products ({error})
+      <div className={classes.Center}>Products ({error})
             <br />
+        <TextField
+          id="standard-name"
+          label="Enter Product Name"
+          value={this.state.searchText}
+          onChange={this.handleSearchTextBoxChange}
+          margin="normal"
+        />
+        <br />
         <Button
           className={classes.Button}
           color="primary"
@@ -81,7 +91,7 @@ class ProductsClass extends React.Component<Props, State> {
     const { classes } = this.props;
     return products.map((product: ProductDTO) => (
       <Card className={classes.card}>
-        <CardActionArea>
+        <CardActionArea onClick={this.openEditor(product)}>
           <CardContent>
             <Typography gutterBottom variant="h5" component="h2">
               Product
@@ -101,6 +111,10 @@ class ProductsClass extends React.Component<Props, State> {
         </CardActions>
       </Card>
     ));
+  }
+
+  private handleSearchTextBoxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ searchText: e.target.value });
   }
 
   private openEditor = (product?: ProductDTO) => (e: React.MouseEvent<HTMLInputElement>) => {
@@ -146,8 +160,9 @@ class ProductsClass extends React.Component<Props, State> {
 
   private getProducts = () => {
     const { dispatch } = this.props;
+    const { searchText } = this.state;
     if (dispatch != null) {
-      dispatch(actions.getProducts());
+      dispatch(actions.getProducts(searchText));
     }
   }
 }

@@ -5,7 +5,7 @@ namespace ServiceContracts
 {
     public interface IProductService
     {
-        IEnumerable<T> GetAll<T>() where T : class, IProductDomainModel, new();
+        IEnumerable<T> GetAll<T>(string name) where T : class, IProductDomainModel, new();
         ProductDomainModel GetById(int id);
         ProductDomainModel Create(ProductDomainModel model);
         

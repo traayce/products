@@ -11,7 +11,7 @@ namespace Api.Services
     {
         ProductViewModel Create(ProductViewModel model);
         ProductViewModel Edit(int id, ProductViewModel model);
-        IEnumerable<ProductViewModel> GetAll();
+        IEnumerable<ProductViewModel> GetAll(string name);
         ProductViewModel Delete(int id);
         ProductViewModel GetById(int id);
         bool IsCodeValid(string code, int id = 0);
@@ -31,9 +31,9 @@ namespace Api.Services
             this._mapper = _mapper;
         }
         
-           public IEnumerable<ProductViewModel> GetAll() 
+           public IEnumerable<ProductViewModel> GetAll(string name) 
         {
-            var result = _productService.GetAll<ProductViewModel>();
+            var result = _productService.GetAll<ProductViewModel>(name);
             return result;
         }
 

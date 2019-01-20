@@ -4,12 +4,12 @@ import { Action } from "redux";
 import { ThunkDispatch } from "redux-thunk";
 import { IState } from "./state";
 
-export const getProducts = () => {
+export const getProducts = (searchText: string) => {
   return async (dispatch: ThunkDispatch<IState, void, Action>) => {
     dispatch(getProductsStart());
     setTimeout(() =>
       productCommands
-        .productsApiGet()
+        .productsApiGet(searchText)
         .then(res => {
           if (res.message !== undefined) {
             return dispatch(getProductsFail("error occured while getting products list"));
