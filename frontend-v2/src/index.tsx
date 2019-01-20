@@ -3,14 +3,14 @@ import { render } from "react-dom";
 import { AppContainer } from "react-hot-loader";
 import { Provider } from "react-redux";
 import { storeCreator } from "./store/createStore";
-import { ProductsComponent } from "./components/products/components-products-component";
+import { ProductContainer } from "./components/products/components-products-container";
 const rootEl = document.getElementById("root");
 
 const store = storeCreator();
 render(
     <Provider store={store}>
         <AppContainer>
-            <ProductsComponent />
+            <ProductContainer />
         </AppContainer>
     </Provider>,
     rootEl

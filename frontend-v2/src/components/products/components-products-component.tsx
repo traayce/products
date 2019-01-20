@@ -18,26 +18,19 @@ interface DispatchProps {
   getProducts?: () => any;
 }
 
-type IProps = StateProps & DispatchProps & WithStyles<typeof ProductsContainerStyles>;
+type Props = StateProps & DispatchProps & WithStyles<typeof ProductsContainerStyles>;
 
-interface State {
-  isOpen: boolean;
-  selectedItem?: ProductDTO;
-}
-
-class ProductsClass extends React.PureComponent<IProps> {
+class ProductsClass extends React.PureComponent<Props> {
   public static MapStateToProps: MapStateToProps<StateProps, object, IStore> = storeState => ({
     products: storeState.products.products,
     isLoading: storeState.products.isLoading,
     error: storeState.products.error,
   })
+
   public static MapDispatchToProps: MapDispatchToProps<DispatchProps, object> = (dispatch: ThunkDispatch<object, void, Action>, props) => ({
     getProducts: () => dispatch(actions.getProducts())
   })
-  public state: State = {
-    isOpen: false,
-    selectedItem: undefined
-  };
+
   public render(): JSX.Element {
     const { products, isLoading, error, classes } = this.props;
     if (products.length === 0 && isLoading === false && error === undefined) {
@@ -68,6 +61,7 @@ class ProductsClass extends React.PureComponent<IProps> {
       </GridListTile>
     ));
   }
+
   private getProducts() {
     const { getProducts } = this.props;
     if (getProducts != null) {
@@ -75,4 +69,4 @@ class ProductsClass extends React.PureComponent<IProps> {
     }
   }
 }
-export const ProductsComponent = withStyles(ProductsContainerStyles)(connect(ProductsClass.MapStateToProps, ProductsClass.MapDispatchToProps)(ProductsClass));
+export const ProductsListComponent = withStyles(ProductsContainerStyles)(connect(ProductsClass.MapStateToProps, ProductsClass.MapDispatchToProps)(ProductsClass));
