@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
 using DataContracts;
@@ -82,6 +83,7 @@ namespace Services
 
         public bool IsCodeValid(string code, int id = 0)
         {
+            if (String.IsNullOrEmpty(code)) return false;
             var entity = productRepository.GetAll().FirstOrDefault(x => x.Code == code);
             return !(entity != null && entity.Id != id);
         }

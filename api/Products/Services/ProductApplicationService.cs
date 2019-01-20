@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using Api.Models.Product;
 using AutoMapper;
 using ServiceContracts;
@@ -14,6 +15,7 @@ namespace Api.Services
         ProductViewModel Delete(int id);
         ProductViewModel GetById(int id);
         bool IsCodeValid(string code, int id = 0);
+        ProductViewModel ConvertModel(ProductViewModel2 model);
     }
     
     public class ProductApplicationService : IProductApplicationService
@@ -62,6 +64,24 @@ namespace Api.Services
         {
             var result = _productService.Edit(id, _mapper.Map<ProductDomainModel>(model));
             return _mapper.Map(result, model);
+        }
+
+        public ProductViewModel ConvertModel(ProductViewModel2 model)
+        {
+           var newModel = _mapper.Map<ProductViewModel>(model);
+           if (model.Photo?.Length > 0)
+           {
+               byte[] fileBytes;
+               using (var ms = new MemoryStream())
+               {
+                   model.Photo.CopyTo(ms);
+                   fileBytes = ms.ToArray();
+               }
+
+               newModel.Photo = fileBytes;
+           }
+
+           return newModel;
         }
     }
 }

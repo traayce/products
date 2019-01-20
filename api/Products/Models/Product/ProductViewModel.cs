@@ -14,7 +14,7 @@ namespace Api.Models.Product
         public string Name { get; set; }
         public byte[] Photo { get; set; }
         [Required]
-        [Range(0, double.MaxValue, ErrorMessage = "Price must be 0-[MAX_DOUBLE]")]
+        [Range(1, double.MaxValue, ErrorMessage = "Price must be 1-[MAX_DOUBLE]")]
         public double Price { get; set; }
         public DateTime LastUpdated { get; set; }
     }
@@ -28,7 +28,7 @@ namespace Api.Models.Product
         public string Name { get; set; }
         public IFormFile Photo { get; set; }
         [Required]
-        [Range(0, double.MaxValue, ErrorMessage = "Price must be 0-[MAX_DOUBLE]")]
+        [Range(1, double.MaxValue, ErrorMessage = "Price must be 1-[MAX_DOUBLE]")]
         public double Price { get; set; }
         public DateTime LastUpdated { get; set; }
     }
