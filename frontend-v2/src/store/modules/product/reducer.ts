@@ -4,7 +4,8 @@ import { IState } from "./state";
 const defaultState: IState = {
   products: [],
   isLoading: false,
-  error: undefined
+  error: undefined,
+  isLoaded: false
 };
 interface Type {
   type: string;
@@ -17,20 +18,23 @@ export const productsReducer = (state: IState = defaultState, action: Action) =>
       return {
         products: action.products,
         isLoading: false,
-        error: undefined
+        error: undefined,
+        isLoaded: true
       };
     case GET_PRODUCTS_FAILURE:
       return {
         ...state,
         isLoading: false,
         products: [],
-        error: action.error
+        error: action.error,
+        isLoaded: true
       };
     case GET_PRODUCTS_START:
       return {
         ...state,
         isLoading: true,
-        error: undefined
+        error: undefined,
+        isLoaded: false
       };
     default:
       return state;

@@ -112,7 +112,7 @@ class ProductFormComponentClass extends React.PureComponent<Props> {
                     color="primary"
                     type="submit"
                     variant="contained"
-                    disabled={isSubmiting || (priceError !== "" || nameError !== "" || codeError !== "")}>Submit</Button>
+                    disabled={isSubmiting || (priceError !== "" || nameError !== "" || codeError !== "" || price === 0 || name === "" || code === "")}>Submit</Button>
             </form>
         </Paper>;
     }

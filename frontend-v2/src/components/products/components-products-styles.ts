@@ -19,7 +19,8 @@ export const ProductsContainerStyles = (theme: Theme) => createStyles({
           margin: "5px"
       },
       Center: {
-          textAlign: "center"
+          textAlign: "center",
+          width: "100%"
       },
       Alert: {
         display: "inline-flex",
@@ -29,7 +30,9 @@ export const ProductsContainerStyles = (theme: Theme) => createStyles({
         maxWidth: "50%"
       },
       card: {
-        maxWidth: 345,
+          margin: "auto",
+        maxWidth: "50%",
+        marginBottom: "10px"
       },
       media: {
         height: 140,

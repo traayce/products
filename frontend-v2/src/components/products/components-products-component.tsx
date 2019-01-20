@@ -1,5 +1,5 @@
 import * as React from "react";
-import { LinearProgress, Paper, GridList, GridListTile, ListSubheader, WithStyles, withStyles, Button, Card, CardActionArea, CardContent, Typography, CardActions, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from "@material-ui/core";
+import { LinearProgress, Paper, WithStyles, withStyles, Button, Card, CardActionArea, CardContent, Typography, CardActions, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from "@material-ui/core";
 import { MapStateToProps, MapDispatchToProps, connect } from "react-redux";
 import { IStore } from "../../store/state";
 import { ProductDTO } from "../../store/modules/product";
@@ -13,6 +13,7 @@ interface StateProps {
   isLoading: boolean;
   products: Array<ProductDTO>;
   error: undefined | string;
+  isLoaded: boolean;
 }
 
 interface DispatchProps {
@@ -22,18 +23,21 @@ interface DispatchProps {
 type Props = StateProps & DispatchProps & WithStyles<typeof ProductsContainerStyles>;
 
 interface State {
-  editingObject: ProductDTO | null;
+  editingObject: ProductDTO | undefined;
+  isEditorOpen: boolean;
 }
 
 class ProductsClass extends React.Component<Props, State> {
   public initialState: State = {
-    editingObject: null,
+    editingObject: undefined,
+    isEditorOpen: false
   };
   public state: State = this.initialState;
   public static MapStateToProps: MapStateToProps<StateProps, object, IStore> = storeState => ({
     products: storeState.products.products,
     isLoading: storeState.products.isLoading,
     error: storeState.products.error,
+    isLoaded: storeState.products.isLoaded
   })
 
   public static MapDispatchToProps: MapDispatchToProps<DispatchProps, object> = (dispatch: ThunkDispatch<object, void, Action>, props) => ({
@@ -41,8 +45,8 @@ class ProductsClass extends React.Component<Props, State> {
   })
 
   public render(): JSX.Element {
-    const { products, isLoading, error, classes } = this.props;
-    if (products.length === 0 && isLoading === false && error === undefined) {
+    const { products, isLoading, error, classes, isLoaded } = this.props;
+    if (isLoaded === false && isLoading === false && error === undefined) {
       this.getProducts();
     }
     if (isLoading) {
@@ -52,19 +56,24 @@ class ProductsClass extends React.Component<Props, State> {
     }
     return <Paper className={classes.Container}>
       {this.renderEditor()}
-      <GridList cellHeight={180} >
-        <GridListTile key="Subheader" cols={2} >
-          <ListSubheader component="div">Products ({error})
-          <Button
-              className={classes.Button}
-              color="primary"
-              type="submit"
-              variant="contained"
-              onClick={this.getProducts}>Fetch Products</Button>
-          </ListSubheader>
-        </GridListTile>
+      <div >Products ({error})
+            <br />
+        <Button
+          className={classes.Button}
+          color="primary"
+          type="submit"
+          variant="contained"
+          onClick={this.getProducts}>Fetch Products</Button>
+        <Button
+          className={classes.Button}
+          color="primary"
+          type="submit"
+          variant="contained"
+          onClick={this.openEditor()}>Create New</Button>
+      </div>
+      <div>
         {this.renderProducts(products)}
-      </GridList>
+      </div>
     </Paper>;
   }
 
@@ -94,35 +103,37 @@ class ProductsClass extends React.Component<Props, State> {
     ));
   }
 
-  private openEditor = (product: ProductDTO) => (e: React.MouseEvent<HTMLInputElement>) => {
-    this.setState({ editingObject: product });
+  private openEditor = (product?: ProductDTO) => (e: React.MouseEvent<HTMLInputElement>) => {
+    this.setState({ editingObject: product, isEditorOpen: true });
   }
 
   private renderEditor = () => {
-    const { editingObject } = this.state;
-    if (editingObject == null)
+    const { editingObject, isEditorOpen } = this.state;
+    if (!isEditorOpen)
       return null;
     return <Dialog
       open={true}
-      onClose={this.onModalClose}
+      onClose={this.onModalClose()}
     >
-      <DialogTitle id="alert-dialog-title">{"Product Edit"}</DialogTitle>
+      <DialogTitle id="alert-dialog-title">Product Form</DialogTitle>
       <DialogContent>
         <DialogContentText id="alert-dialog-description">
-          <ProductFormComponent editingObject={editingObject} onFinished={this.onModalClose} />
+          <ProductFormComponent editingObject={editingObject} onFinished={this.onModalClose(true)} />
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={this.onModalClose} color="primary">
+        <Button onClick={this.onModalClose()} color="primary">
           Close
       </Button>
       </DialogActions>
     </Dialog>;
   }
 
-  private onModalClose = () => {
-    this.setState({ editingObject: null });
-    this.getProducts();
+  private onModalClose = (refetch?: boolean) => () => {
+    this.setState({ editingObject: undefined, isEditorOpen: false });
+    if (refetch) {
+      this.getProducts();
+    }
   }
 
   private onDelete = (id: number) => (e: React.MouseEvent<HTMLInputElement>) => {
